@@ -53,10 +53,17 @@ class Integration_session:
 
 
 	def first_assignment(self):
-		for ca_m in self.ca_members:
+		for i, ca_m in enumerate(self.ca_members):
+			ca_m.potential_events[0].actual_members = [] #TODO: Comprendre pourquoi il faut ajouter cette ligne ????
+			print("\n")
+			print(ca_m.name)
+			print(ca_m.potential_events[0].potential_members)
 			for member in ca_m.potential_events[0].potential_members:
+				print(member)
 				if member in self.new_members:
+					print("Avant: {}".format(ca_m.potential_events[0].actual_members))
 					ca_m.potential_events[0].actual_members.append(member)
+					print("Apres: {}".format(ca_m.potential_events[0].actual_members))
 					self.new_members.remove(member)
 					
 
@@ -129,6 +136,7 @@ print(session)
 #print(session.new_members)
 session.first_assignment()
 print(session)
+
 #print(session.new_members)
 #for ca_m in session.ca_members:
 #	print(ca_m.new_members)
