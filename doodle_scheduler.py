@@ -53,18 +53,28 @@ class Integration_session:
 
 
 	def first_assignment(self):
-		for i, ca_m in enumerate(self.ca_members):
+		for ca_m in self.ca_members:
 			ca_m.potential_events[0].actual_members = [] #TODO: Comprendre pourquoi il faut ajouter cette ligne ????
-			print("\n")
-			print(ca_m.name)
-			print(ca_m.potential_events[0].potential_members)
 			for member in ca_m.potential_events[0].potential_members:
-				print(member)
 				if member in self.new_members:
-					print("Avant: {}".format(ca_m.potential_events[0].actual_members))
 					ca_m.potential_events[0].actual_members.append(member)
-					print("Apres: {}".format(ca_m.potential_events[0].actual_members))
 					self.new_members.remove(member)
+
+	def where_can_go(self, name):
+		liste = [ca.name for ca in self.ca_members if name in ca.potential_events[0].potential_members]
+		print("{} can go to {}".format(name, liste))
+		return liste
+
+
+	def move_to(self, member_name, ca_destination_name):
+		# Warning - Only works for first event and if ca_origin contains one element
+		ca_origin = [ca for ca in self.ca_members if member_name in ca.potential_events[0].actual_members][0]
+		ca_origin.potential_events[0].actual_members.remove(member_name)
+
+		ca_dest = [cam for cam in self.ca_members if cam.name == ca_destination_name][0]
+		ca_dest.potential_events[0].actual_members.append(member_name)
+
+
 					
 
 
@@ -123,18 +133,15 @@ class Event:
 
 session = Integration_session()
 
-print(session)
-
 session.sort_ca_members()
-
-print(session)
-
-#pd.set_option('max_columns', None)
 session.sort_potential_events()
+session.first_assignment()
 
 print(session)
-#print(session.new_members)
-session.first_assignment()
+
+print(session.where_can_go('Rodolphe'))
+session.move_to("Rodolphe", "Quentin [CA]")
+
 print(session)
 
 #print(session.new_members)
